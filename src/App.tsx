@@ -5,6 +5,7 @@ import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
 
 const theme = createTheme({
   palette: {
@@ -41,6 +42,7 @@ function App() {
         <Projects />
         <Contact />
       </main>
+      <Footer/>
     </ThemeProvider>
   );
 }

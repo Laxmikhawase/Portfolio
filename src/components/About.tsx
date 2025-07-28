@@ -95,7 +95,7 @@ const About: FC = () => {
           >
             <Box
               component="img"
-              src="src/assets/flex.jpg"
+              src="https://parkyddigital.com/img/service%20digital%20marketing%20agency%20toronto.gif"
               alt="Profile"
               sx={{
                 width: '100%',

@@ -15,18 +15,18 @@ const projects: Project[] = [
   {
     title: 'E-Commerce Platform',
     description: 'A modern e-commerce platform built with React and Node.js, featuring real-time inventory management and secure payment processing.',
-    image: '/project1.jpg',
+    image: 'https://preview.brand.page/preview/template/9ad66d76-eef5-4407-9d0c-02018d1bfb5b/logo-template/2e50649b-5c6a-46bd-874c-210b1f69383e?deviceType=brandsite-desktop&logoTemplateVersion=1',
     technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-    githubUrl: 'https://github.com/yourusername/ecommerce',
-    liveUrl: 'https://ecommerce-demo.com',
+    githubUrl: 'https://github.com/Laxmikhawase/EchoBeats_MusicApp',
+    liveUrl: 'https://laxmikhawase.github.io/EchoBeats_MusicApp/',
   },
   {
     title: 'EchoBeats',
     description: 'Echobeats is the music streaming web app featuring sleek UI, song previews, and playlist management. Built with React and modern libraries to deliver a smooth and interactive user experience.',
-    image: 'src/assets/echobeatsIcon.jpg',
+    image: 'https://www.shutterstock.com/shutterstock/videos/1107113887/thumb/1.jpg?ip=x480',
     technologies: ['React', 'Firebase', 'Material-UI', 'Redux'],
-    githubUrl: 'https://github.com/yourusername/task-manager',
-    liveUrl: 'https://task-manager-demo.com',
+    githubUrl: 'https://github.com/Laxmikhawase/EchoBeats_MusicApp',
+    liveUrl: 'https://laxmikhawase.github.io/EchoBeats_MusicApp/',
   },
 ];
 
@@ -154,6 +154,7 @@ const Projects: FC = () => {
                       color: 'var(--primary-color)',
                       '&:hover': {
                         backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        color:"grey"
                       },
                     }}
                   >
@@ -171,6 +172,7 @@ const Projects: FC = () => {
                       color: 'white',
                       '&:hover': {
                         backgroundColor: 'var(--secondary-color)',
+                        color:"grey"
                       },
                     }}
                   >
