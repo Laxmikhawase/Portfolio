@@ -8,6 +8,7 @@ const Hero: FC = () => {
   return (
     <Box
       component="section"
+      id="home"
       sx={{
         minHeight: "100vh",
         background:
