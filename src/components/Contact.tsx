@@ -1,13 +1,21 @@
-import { Box, Container, Typography, TextField, Button } from '@mui/material';
-import { motion } from 'framer-motion';
-import type { FC, FormEvent, ChangeEvent } from 'react';
-import { useState } from 'react';
+import { Box, Container, Typography, TextField, Button } from "@mui/material";
+import { motion } from "framer-motion";
+import type { FC, FormEvent, ChangeEvent } from "react";
+import { useState } from "react";
+
+
+interface ContactForm {
+  name: string;
+  email: string;
+  message: string;
+}
 
 const Contact: FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [formData, setFormData] = useState<ContactForm>({
+    name: "",
+    email: "",
+    message: "",
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -18,10 +26,38 @@ const Contact: FC = () => {
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    setStatus("sending");
+
+    try {
+      // ✅ In Vite, env vars must start with VITE_
+      const base = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
+
+      const res = await fetch(`${base}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to send message");
+      }
+
+      const json = await res.json();
+      console.log("Form submitted:", json);
+
+      setFormData({ name: "", email: "", message: "" });
+      setStatus("success");
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+      // alert(err.message || "Something went wrong"); // optional
+    } finally {
+      // reset status after few seconds
+      setTimeout(() => setStatus("idle"), 3500);
+    }
   };
 
   return (
@@ -29,7 +65,7 @@ const Contact: FC = () => {
       component="section"
       id="contact"
       sx={{
-        backgroundColor: 'var(--background-light)',
+        backgroundColor: "var(--background-light)",
         py: 8,
       }}
     >
@@ -37,25 +73,27 @@ const Contact: FC = () => {
         <Typography
           variant="h2"
           sx={{
-            textAlign: 'center',
+            textAlign: "center",
             mb: 6,
             fontWeight: 700,
-            background: 'var(--gradient-primary)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            background: "var(--gradient-primary)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
           }}
         >
           Get In Touch
         </Typography>
+
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
             gap: 4,
-            alignItems: 'center',
+            alignItems: "center",
           }}
         >
+          {/* Left Info Section */}
           <Box
             component={motion.div}
             initial={{ opacity: 0, x: -50 }}
@@ -64,14 +102,14 @@ const Contact: FC = () => {
             transition={{ duration: 0.8 }}
             sx={{
               flex: 1,
-              textAlign: { xs: 'center', md: 'left' },
+              textAlign: { xs: "center", md: "left" },
             }}
           >
             <Typography
               variant="h3"
               sx={{
                 mb: 2,
-                color: 'var(--text-primary)',
+                color: "var(--text-primary)",
                 fontWeight: 600,
               }}
             >
@@ -81,7 +119,7 @@ const Contact: FC = () => {
               variant="body1"
               sx={{
                 mb: 3,
-                color: 'var(--text-secondary)',
+                color: "var(--text-secondary)",
                 lineHeight: 1.8,
               }}
             >
@@ -90,6 +128,8 @@ const Contact: FC = () => {
               using the contact form or through my social media profiles.
             </Typography>
           </Box>
+
+          {/* Right Contact Form */}
           <Box
             component={motion.div}
             initial={{ opacity: 0, x: 50 }}
@@ -98,15 +138,15 @@ const Contact: FC = () => {
             transition={{ duration: 0.8 }}
             sx={{
               flex: 1,
-              width: '100%',
+              width: "100%",
             }}
           >
             <Box
               component="form"
               onSubmit={handleSubmit}
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
+                display: "flex",
+                flexDirection: "column",
                 gap: 2,
               }}
             >
@@ -117,19 +157,6 @@ const Contact: FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: 'rgba(124, 58, 237, 0.2)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'var(--primary-color)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'var(--primary-color)',
-                    },
-                  },
-                }}
               />
               <TextField
                 required
@@ -139,19 +166,6 @@ const Contact: FC = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: 'rgba(124, 58, 237, 0.2)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'var(--primary-color)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'var(--primary-color)',
-                    },
-                  },
-                }}
               />
               <TextField
                 required
@@ -162,36 +176,31 @@ const Contact: FC = () => {
                 rows={4}
                 value={formData.message}
                 onChange={handleChange}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: 'rgba(124, 58, 237, 0.2)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'var(--primary-color)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'var(--primary-color)',
-                    },
-                  },
-                }}
               />
+
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   type="submit"
                   variant="contained"
                   fullWidth
+                  disabled={status === "sending"}
                   sx={{
                     mt: 2,
-                    backgroundColor: 'var(--primary-color)',
-                    color: 'white',
+                    backgroundColor: "var(--primary-color)",
+                    color: "white",
                     py: 1.5,
-                    '&:hover': {
-                      backgroundColor: 'var(--secondary-color)',
+                    "&:hover": {
+                      backgroundColor: "var(--secondary-color)",
                     },
                   }}
                 >
-                  Send Message
+                  {status === "sending"
+                    ? "Sending..."
+                    : status === "success"
+                    ? "Message Sent!"
+                    : status === "error"
+                    ? "Error, Try Again"
+                    : "Send Message"}
                 </Button>
               </motion.div>
             </Box>
@@ -202,4 +211,4 @@ const Contact: FC = () => {
   );
 };
 
-export default Contact; 
+export default Contact;
